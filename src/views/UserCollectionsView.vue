@@ -1,0 +1,85 @@
+<script setup>
+import {collection, onSnapshot, doc, getDoc} from "firebase/firestore"
+import {db} from "../firebase"
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import {ref, onMounted, computed} from 'vue'
+import {useRoute} from 'vue-router'
+import TheRecipe from '../components/TheRecipe.vue'
+
+const route = useRoute();
+const routeCollections = route.params.uid; 
+
+const userCollections = ref([])
+const auth = getAuth();
+const userId = ref(null); 
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    userId.value = user.uid;
+    await fetchUserCollections();
+  } else {
+   
+  }
+});
+
+async function fetchUserCollections() {
+  const userDocRef = doc(db, `users/${routeCollections}`);
+  const userDoc = await getDoc(userDocRef);
+  if (userDoc.exists()) {
+    const collectionsList = userDoc.data().collectionList || [];
+    userCollections.value = collectionsList;
+    // You can now use userCollections to fetch data from each collection
+  } else {
+    console.log("User document does not exist");
+  }
+}
+const slugifiedCollections = computed(() => {
+  return userCollections.value.map(collectionObj => {
+    // Ensure that collectionObj.name exists and is a string before replacing
+    if (typeof collectionObj.name === 'string') {
+      return collectionObj.name.replace(/\s+/g, '-');
+    } else {
+      return ''; // or some default value
+    }
+  });
+});
+</script>
+
+<template>
+  <main class="grid-wrapper">
+    <div v-for="(collection, index) in slugifiedCollections" :key="index" class="">
+      <router-link :to="`/${routeCollections}/collections/${collection}`" class="collection rc">
+        <img :src="userCollections[index].img" alt="">
+        <div class="flex-c-c">
+          <div class="title"> {{ userCollections[index].name }}</div>
+        </div>
+      </router-link>
+    </div>
+  </main>
+</template>
+
+<style scoped>
+
+main{
+  width:90vw;
+  margin-top:5rem;
+  margin-inline: auto;
+}
+
+
+.collection{
+  background:pink;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  display:grid;
+  grid-template-rows: 4fr 1fr;
+  width:100%;
+
+}
+
+img{
+  height: 15rem;
+  overflow:none;
+  width:100%;
+  object-fit:cover;
+  border-radius:1rem 1rem 0 0;
+}
+</style>

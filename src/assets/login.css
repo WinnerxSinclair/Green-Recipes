@@ -1,0 +1,12 @@
+label{
+  font-family: 'Oswald';
+  font-size:var(--fs-400);
+  font-weight:bold;
+  margin-top:1.5rem;
+}
+
+input{
+  padding-left:1rem;
+  line-height:2;
+  
+}
