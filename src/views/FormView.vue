@@ -25,7 +25,7 @@ onMounted(() => {
       userId.value = user.uid;
       dName.value = user.displayName;
       fetchUserCollectionsList();
-      // generateAndAddMockData(36);
+      //  generateAndAddMockData(36);
     } else {
     
     }
@@ -113,9 +113,9 @@ const addItem = async (userIdd) =>{
         steps: stepList.value,
         prep: prep.value,
         cook: cook.value,
-        total: total.value,
+        total: prep.value + cook.value,
         serv: serv.value,
-        img: image.value,
+        img: 'https://choosingchia.com/jessh-jessh/uploads/2021/09/Vegan-chow-mein-9.jpg',
         slug: slug.value,
         category: category.value,
         userId: userId.value,
@@ -160,7 +160,7 @@ const addItem = async (userIdd) =>{
   
   const addMockItem = async (recipeDetails) => {
     
-    const {title, description, ingredients, steps, prepTime, cookTime,totalTime, servings, image, category, userIdd, displayName, selectedCollections, userDocRef,userDoc, currentCollectionList} = recipeDetails;
+    const {title, description, ingredients, steps, prepTime, cookTime,totalTime, servings, image, category, userIdd, displayName,keyWords, selectedCollections, userDocRef,userDoc, currentCollectionList} = recipeDetails;
 
     const recipeSlug = generateSlug(title, new Date().getTime());
     const recipe = {
@@ -178,6 +178,7 @@ const addItem = async (userIdd) =>{
         userId: userIdd,
         displayName,
         count: 0,
+        keyWords: keyWords,
         creationDate: Timestamp.fromDate(new Date())
     };
 
@@ -208,12 +209,13 @@ await updateDoc(userDocRef, {
   const generateAndAddMockData = async (numberOfItems) => {
     for (let i = 0; i < numberOfItems; i++) {
       const userDocRef = doc(db, `users/${userId.value}`);
-      
+      const mockTitle = `Mock Title ${i+72}`;
+      const fragTitle = mockTitle.toLowerCase().split(" ");
     const userDoc = await getDoc(userDocRef);
     const userData = userDoc.data();
-const currentCollectionList = userData && userData.collectionList !== undefined ? userData.collectionList : [];
+    const currentCollectionList = userData && userData.collectionList !== undefined ? userData.collectionList : [];
         const mockData = {
-            title: `Mock Title ${i+72}`,
+            title: mockTitle,
             description: `Mock Description ${i+72}`,
             ingredients: [{id: 1, name: 'Example Ingredient 1'}, {id: 2, name: 'Example Ingredient 2'}], 
             steps: [{id: 1, name: 'Step 1'}, {id: 2, name: 'Step 2'}],
@@ -221,11 +223,12 @@ const currentCollectionList = userData && userData.collectionList !== undefined 
             cookTime: '20 min',
             totalTime: '30 min',
             servings: '4',
-            image: 'https://rainbowplantlife.com/wp-content/uploads/2022/10/pancakes-new-cover-photo-more-zoomed-in-1-of-1.jpg', 
-            category: 'breakfast',
+            image: 'https://www.marystestkitchen.com/wp-content/uploads/2016/04/strawberry-sugar-glazed-vegan-donuts-stack.jpg', 
+            category: 'dessert',
             userIdd: userId.value, 
             displayName: dName.value,
-            selectedCollections: ['Cobra'],
+            keyWords: fragTitle,
+            selectedCollections: ['Winner S'],
             userDocRef: userDocRef,
             userDoc: userDoc,
             currentCollectionList: currentCollectionList
@@ -280,7 +283,7 @@ const currentCollectionList = userData && userData.collectionList !== undefined 
           class="input"
           type="file"
           @change="onImageChange"
-          required>
+          >
 
       <label v-for="(collection, index) in userCollections" :key="index">{{ collection.name }}
         <input type="checkbox" v-model="selectedCollections" :value="collection.name">

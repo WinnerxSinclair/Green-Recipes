@@ -61,7 +61,7 @@ onUnmounted(() => {
       <a @click="goForm">Add Recipe</a>
     </div>
 
-    <button v-if="user" class="c-margin" @click.stop="profileClicked">{{ user.displayName }}</button>
+    <button v-if="user" class="c-margin" @click.stop="profileClicked">{{ user?.displayName }}</button>
     <button v-else class="c-margin" @click="goLogin">Login</button>
   </div>
 

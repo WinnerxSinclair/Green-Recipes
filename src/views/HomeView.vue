@@ -3,6 +3,7 @@ import {collection, onSnapshot, query, where, limit, orderBy, getDocs, startAfte
 import {db} from "../firebase"
 import {ref, onMounted, computed, watch} from 'vue'
 import TheRecipe from '../components/TheRecipe.vue'
+import algoliasearch from 'algoliasearch/lite';
 
 const myRecipes = ref([])
 const lastVisible = ref(null)
@@ -33,7 +34,7 @@ const fetchRecipes = async (reset = false) => {
         const documents = documentSnapshots.docs;
         if (!documents.empty) {
             const newRecipes = documents.map(doc => ({
-              category: doc.data().Category,
+              category: doc.data().category,
               image: doc.data().img,
               name: doc.data().title,
               slug: doc.data().slug,
@@ -46,34 +47,41 @@ const fetchRecipes = async (reset = false) => {
             }
             lastVisible.value = documents[documents.length - 1]; // Update lastVisible for pagination
         }
+        console.log(myRecipes.value)
     } catch (error) {
         console.error("Error fetching recipes: ", error);
     }
 };
 
 const searchQuery = async() => {
+  const algoliaSearch = algoliasearch('J1TOSPFCDI', '05db3c93a1f2557d9a3d72b96084f49d');
+  const searchIndex = algoliaSearch.initIndex('RecipeSearchResults');
   category.value = 'search';
-  let queryConstraints = [orderBy(sortBy.value, "desc"), limit(limitL), where("keyWords", "array-contains", search.value.toLowerCase())];
-  const xd = query(collection(db, "Recipes"), ...queryConstraints);
-
+  
   try {
-        const documentSnapshots = await getDocs(xd);
-        const documents = documentSnapshots.docs;
-        if (!documents.empty) {
-            const newRecipes = documents.map(doc => ({
-              category: doc.data().Category,
-              image: doc.data().img,
-              name: doc.data().title,
-              slug: doc.data().slug,
-              userId: doc.data().userId
-            }));
-            myRecipes.value = newRecipes
-        }
-        
-    } catch (error) {
-        console.error("Error fetching recipes: ", error);
-    }
+    // Specify the 'restrictSearchableAttributes' option
+    const searchOptions = {
+      restrictSearchableAttributes: ['title'] // Ensure 'title' matches the attribute name in your index
+    };
+    
+    const { hits } = await searchIndex.search(search.value, searchOptions);
+    const formattedHits = hits.map(hit => ({
+      // Mapping each hit to your desired structure
+      category: hit.Category, // Adjust as necessary
+      image: hit.img, // Adjust as necessary
+      name: hit.title, // Adjust as necessary
+      slug: hit.slug, // Adjust as necessary
+      userId: hit.userId // Adjust as necessary
+    }));
+    
+    myRecipes.value = formattedHits;
+    console.log(myRecipes.value);
+  } catch (error) {
+    console.error("Error fetching recipes: ", error);
+  }
 }
+
+
 watch(sortBy, () => {
   currentPage.value = 1;
   if(search.value){
