@@ -100,9 +100,6 @@ const slug = computed(() => {
   return generateSlug(title.value, new Date().getTime())
 })
 
-const fragTitle = computed(() => {
-  return title.value.toLowerCase().split(" ")
-})
 
 const addItem = async (userIdd) =>{
 
@@ -121,7 +118,6 @@ const addItem = async (userIdd) =>{
         userId: userId.value,
         displayName: dName.value,
         count: 0,
-        keyWords: fragTitle.value,
         creationDate: Timestamp.fromDate(new Date())
     };
     const userDocRef = doc(db, `users/${userId.value}`);
@@ -160,7 +156,7 @@ const addItem = async (userIdd) =>{
   
   const addMockItem = async (recipeDetails) => {
     
-    const {title, description, ingredients, steps, prepTime, cookTime,totalTime, servings, image, category, userIdd, displayName,keyWords, selectedCollections, userDocRef,userDoc, currentCollectionList} = recipeDetails;
+    const {title, description, ingredients, steps, prepTime, cookTime,totalTime, servings, image, category, userIdd, displayName, selectedCollections, userDocRef,userDoc, currentCollectionList} = recipeDetails;
 
     const recipeSlug = generateSlug(title, new Date().getTime());
     const recipe = {
@@ -178,7 +174,6 @@ const addItem = async (userIdd) =>{
         userId: userIdd,
         displayName,
         count: 0,
-        keyWords: keyWords,
         creationDate: Timestamp.fromDate(new Date())
     };
 
@@ -210,7 +205,7 @@ await updateDoc(userDocRef, {
     for (let i = 0; i < numberOfItems; i++) {
       const userDocRef = doc(db, `users/${userId.value}`);
       const mockTitle = `Mock Title ${i+72}`;
-      const fragTitle = mockTitle.toLowerCase().split(" ");
+      
     const userDoc = await getDoc(userDocRef);
     const userData = userDoc.data();
     const currentCollectionList = userData && userData.collectionList !== undefined ? userData.collectionList : [];
@@ -223,12 +218,11 @@ await updateDoc(userDocRef, {
             cookTime: '20 min',
             totalTime: '30 min',
             servings: '4',
-            image: 'https://www.marystestkitchen.com/wp-content/uploads/2016/04/strawberry-sugar-glazed-vegan-donuts-stack.jpg', 
-            category: 'dessert',
+            image: 'https://rainbowplantlife.com/wp-content/uploads/2022/10/pancakes-new-cover-photo-more-zoomed-in-1-of-1.jpg', 
+            category: 'breakfast',
             userIdd: userId.value, 
             displayName: dName.value,
-            keyWords: fragTitle,
-            selectedCollections: ['Winner S'],
+            selectedCollections: ['cobra'],
             userDocRef: userDocRef,
             userDoc: userDoc,
             currentCollectionList: currentCollectionList

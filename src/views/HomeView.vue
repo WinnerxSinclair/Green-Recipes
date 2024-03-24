@@ -8,8 +8,8 @@ import algoliasearch from 'algoliasearch/lite';
 const myRecipes = ref([])
 const lastVisible = ref(null)
 let currentPage = ref(1);
-const itemsPerPage = 24;
-const limitL = 96;
+const itemsPerPage = 12;
+const limitL = 36;
 const sortBy = ref("count")
 const category = ref(null);
 const search = ref(null)
@@ -154,7 +154,8 @@ const paginatedRecipes = computed(() => {
           :on-click="onClickHandler"
           :hide-prev-next-when-ends="true"
         />
-      <button v-if="currentPage % 4 == 0 && myRecipes.length >= currentPage * itemsPerPage" @click="seeMoreRecipes" class="btn-color2 btn-pad">See More</button>
+      <button v-if="currentPage % 3 == 0 && myRecipes.length <= currentPage * itemsPerPage"
+        @click="seeMoreRecipes" class="btn-color2 btn-pad">See More</button>
     </div>
   </main>
 </template>
