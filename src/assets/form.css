@@ -9,3 +9,7 @@ input{
   padding-left:1rem;
   line-height:2;
 }
+
+input[type="file"]{
+  width:40%;
+}

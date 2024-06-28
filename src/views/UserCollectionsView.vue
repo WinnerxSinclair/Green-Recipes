@@ -12,9 +12,11 @@ const routeCollections = route.params.uid;
 const userCollections = ref([])
 const auth = getAuth();
 const userId = ref(null); 
+const userName = ref(null);
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     userId.value = user.uid;
+    userName.value = user.displayName;
     await fetchUserCollections();
   } else {
    
@@ -45,10 +47,13 @@ const slugifiedCollections = computed(() => {
 </script>
 
 <template>
+  <div class="flex-c margin-top">
+    <h1 class="ff-1 underline light">{{ userName }}'s Collections</h1>
+  </div>
   <main class="grid-wrapper">
-    <div v-for="(collection, index) in slugifiedCollections" :key="index" class="">
-      <router-link :to="`/${routeCollections}/collections/${collection}`" class="collection rc">
-        <img :src="userCollections[index].img" alt="">
+    <div v-for="(collection, index) in slugifiedCollections" :key="index">
+      <router-link :to="`/${routeCollections}/collections/${collection}`" class="c-link recipe-card rc">
+        <img :src="userCollections[index].img" alt="empty collection :(">
         <div class="flex-c-c">
           <div class="title"> {{ userCollections[index].name }}</div>
         </div>
@@ -61,18 +66,8 @@ const slugifiedCollections = computed(() => {
 
 main{
   width:90vw;
-  margin-top:5rem;
+  margin-top:3rem;
   margin-inline: auto;
-}
-
-
-.collection{
-  background:pink;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-  display:grid;
-  grid-template-rows: 4fr 1fr;
-  width:100%;
-
 }
 
 img{
@@ -81,5 +76,9 @@ img{
   width:100%;
   object-fit:cover;
   border-radius:1rem 1rem 0 0;
+}
+
+.c-link{
+  color:black;
 }
 </style>

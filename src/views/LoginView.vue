@@ -49,8 +49,10 @@ const goSignup = () => router.push('/signup')
 </script>
 
 <template>
-  <main class="layout-small">
+  <main class="grid-c">
+    <img src="../assets/nature.webp" alt="nature picture" class="nature">
     <form @submit.prevent="submitLogin" class="flex column">
+      <h1 class="c-ff">Welcome to Green Recipes</h1>
       <label>Email</label>
       <input type="email" v-model="email">
 
@@ -59,12 +61,12 @@ const goSignup = () => router.push('/signup')
 
       <button type="submit" class="main-btn-full margin-top">Sign in</button>
    
-      <div class="flex align-c click grey custom-google margin-top">
+      <div class="flex-c-c click custom-google margin-top" @click="submitSignInWIthGoogle">
         <img src="../assets/icons/google.png" class="icon-small" alt="">
-        <div class="margin-left alt fs-400" @click="submitSignInWIthGoogle">Sign in with Google</div>
+       
       </div>
       <br>
-      <div class="click" @click="goSignup">No Account? Sign up here.</div>
+      <div class="click blue" @click="goSignup">No Account? Sign up here.</div>
     </form>
   </main>
 </template>
@@ -72,7 +74,4 @@ const goSignup = () => router.push('/signup')
 <style scoped>
 @import '../assets/login.css';
 
-.custom-google{
-  padding:.5rem;
-}
 </style>

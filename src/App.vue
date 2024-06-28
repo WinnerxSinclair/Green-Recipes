@@ -7,7 +7,8 @@ import {ref, onMounted} from 'vue'
 
 <template>
   <div>
- <TheHeader /></div>
+ <TheHeader />
+</div>
  <router-view></router-view>
 </template>
 

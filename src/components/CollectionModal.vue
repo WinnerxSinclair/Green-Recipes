@@ -67,6 +67,12 @@ onUnmounted(() => {
 
 async function addNewCol(){
   const userDocRef = doc(db, `users/${userId.value}`);
+  const userDoc = await getDoc(userDocRef);
+  for(let coll of userDoc.data().collectionList){
+    if(coll.name === newCollection.value){
+      return;
+    }
+  }
   await updateDoc(userDocRef, {
     collectionList: arrayUnion({
       name: newCollection.value,
@@ -115,8 +121,9 @@ const addItem = async () =>{
   emit('submit');
 }
 </script>
+
 <template>
-  <form @submit.prevent="addItem" class="modal rc">
+  <form @submit.prevent="addItem" class="modal rc pad">
     <h1 class="roboto">Select Collections</h1>
     <div class="flex gap" v-for="(collection, index) in existingCollections" :key="index">
       <label >{{ collection }}</label>
@@ -128,8 +135,8 @@ const addItem = async () =>{
     </div>
     <br>
     
-    <button v-if="newColBtn" type="button" class="border-none" @click="newColBtn = false">+ Add New Collection</button>
-    <input v-if="!newColBtn" type="text" v-model="newCollection" placeholder="collection name">
+    <button v-if="newColBtn" type="button" class="border-none" @click="newColBtn = false">+ Create New Collection</button>
+    <input v-if="!newColBtn" type="text" v-model="newCollection" placeholder="collection name" class="pad-left">
     <button v-if="!newColBtn" type="button" class="border-none" @click="addNewCol">+ Add New Collection</button>
     <br>
     <button type="submit" class="pad-small testbut margin-top">Update Collections</button>

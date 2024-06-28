@@ -14,6 +14,25 @@ function requireLogin(to, from, next ){
   })
 }
 
+function requireAuth(to, from, next ){
+  const unsubscribe = onAuthStateChanged(firebaseAppAuth, user => {
+    unsubscribe()
+    if(!user){
+      console.log("no user, route to login")
+      next('/login')
+    } else {
+    user.getIdTokenResult().then(idTokenResult => {
+        if(idTokenResult.claims.admin){
+          next()
+        } else {
+          alert("no perms")
+          next('/')
+        }
+    })
+    }
+  })
+}
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -39,9 +58,14 @@ const router = createRouter({
       component: () => import('../views/UserRecipesView.vue')
     },
     {
+      path: '/:uid/:displayName/community',
+      name: 'public',
+      component: () => import('../views/UserPublicView.vue')
+    },
+    {
       path: '/:uid/collections/:collection/:slug',
       name: 'userrecipe',
-      component: () => import('../views/RecipeView.vue')
+      component: () => import('../views/CollRecipeView.vue')
     },
     {
       path: '/form',
@@ -58,6 +82,12 @@ const router = createRouter({
       path: '/signup',
       name: 'signup',
       component: () => import('../views/SignupView.vue')
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: () => import('../views/AdminView.vue'),
+      
     },
   ]
 })

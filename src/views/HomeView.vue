@@ -1,6 +1,7 @@
 <script setup>
 import {collection, onSnapshot, query, where, limit, orderBy, getDocs, startAfter} from "firebase/firestore"
-import {db} from "../firebase"
+import {db, firebaseFunctions} from "../firebase"
+import { httpsCallable } from 'firebase/functions';
 import {ref, onMounted, computed, watch} from 'vue'
 import TheRecipe from '../components/TheRecipe.vue'
 import algoliasearch from 'algoliasearch/lite';
@@ -11,7 +12,7 @@ let currentPage = ref(1);
 const itemsPerPage = 12;
 const limitL = 36;
 const sortBy = ref("count")
-const category = ref(null);
+const category = ref('');
 const search = ref(null)
 
 onMounted(() => {
@@ -21,7 +22,7 @@ onMounted(() => {
 const fetchRecipes = async (reset = false) => {
   
     let queryConstraints = [orderBy(sortBy.value, "desc"), limit(limitL)];
-    if (category.value !== null) {
+    if (category.value !== '') {
       queryConstraints.unshift(where("category", "==", category.value));
     }
     if (!reset && lastVisible.value) {
@@ -81,7 +82,6 @@ const searchQuery = async() => {
   }
 }
 
-
 watch(sortBy, () => {
   currentPage.value = 1;
   if(search.value){
@@ -117,29 +117,39 @@ const paginatedRecipes = computed(() => {
   let end = start + itemsPerPage;
   return myRecipes.value.slice(start, end);
 });
+
+const catStruct = ref([
+  { name: 'All Recipes', value: '' },
+  { name: 'Entrees', value: 'entree' },
+  { name: 'Breakfast', value: 'breakfast' },
+  { name: 'Desserts', value: 'dessert' }
+  ])
 </script>
 
 <template>
   <main class="container">
     <div class="flex align-c search-container">
       <img @click="searchQuery" src="../assets/icons/search.svg" class="icon-small" alt="">
-      <input type="text" class="search fs-200" placeholder="search keywords e.g. 'soup'" v-model="search">
+      <input type="text" class="search fs-200" placeholder="search keywords e.g. 'soup'" v-model="search" @keyup.enter="searchQuery">
     </div>
     <div class="flex-sb">
       <div class="flex gap cat-contain">
-        <div @click="changeCategory(null)">All Recipes</div>
-        <div @click="changeCategory('entree')">Entrees</div>
-        <div @click="changeCategory('breakfast')">Breakfast</div>
-        <div @click="changeCategory('dessert')">Desserts</div>
+        <div v-for="cat in catStruct" :key="cat.name" :value="cat.value" 
+            :class="{darken:category===cat.value}" @click="changeCategory(cat.value)">
+            {{ cat.name }}
+        </div>
       </div>
+      <select class="hide">
+        <option v-for="cat in catStruct" :key="cat.name" :value="cat.value" @click="changeCategory(cat.value)">{{ cat.name }}</option>
+      </select>
      
       <div>Sort by:
-      <select v-model="sortBy">
-        <option value="count">Popular</option>
-        <option value="rating">Rated</option>
-        <option value="creationDate">Latest</option>
-      </select>
-    </div>
+        <select v-model="sortBy">
+          <option value="count">Popular</option>
+          <option value="rating">Rated</option>
+          <option value="creationDate">Latest</option>
+        </select>
+      </div>
     </div>
     <br>
     <div class="recipe-wrapper click">
@@ -162,14 +172,14 @@ const paginatedRecipes = computed(() => {
 
 <style scoped>
 main{
-  width:80vw;
-  margin-top:1rem;
+  width:clamp(350px, 100%, 90rem);
+  padding:1rem;
   margin-inline: auto;
 }
 .recipe-wrapper{
   display:grid;
   gap:1.5rem;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(33%, 18rem), 1fr));
 }
 
 .search-container{
@@ -178,9 +188,9 @@ main{
   margin-bottom:4rem;
 }
 .search{
-  width:50%;
+  width:clamp(350px,50%,60rem);
   border:none;
-  border-bottom:2px solid rgba(0, 0, 0, 0.548);
+  border-bottom:2px solid rgba(0, 0, 0, 0.374);
 }
 .search:focus{
   outline:none;
@@ -200,5 +210,21 @@ main{
 .cat-contain div:hover{
   font-weight:500;
 }
+.cat-contain div.darken{
+  font-weight:700;
+}
+.hide{
+  display:none;
+}
+
+@media(max-width: 768px){
+  .hide{
+    display:block;
+  }
+  .cat-contain{
+    display:none;
+  }
+}
+
 
 </style>

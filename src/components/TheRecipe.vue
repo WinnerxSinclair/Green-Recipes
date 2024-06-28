@@ -24,9 +24,9 @@ const toLink = computed(() => {
 </script>
 
 <template>
-  <div class="recipe rel rc">
-    <router-link :to="toLink" class="link">
-        <img :src="recipe.image" alt="">
+  <div class="rel rc">
+    <router-link :to="toLink" class="no-link recipe-card rc">
+        <img :src="recipe.image" alt="image of recipe">
         <div class="wrapper flex-c-c">
           <div class="name text-center title">{{ recipe.name }}</div>
         </div>
@@ -37,14 +37,6 @@ const toLink = computed(() => {
 </template>
 
 <style scoped>
-.recipe{
-  background:rgba(228, 214, 135, 0.219);
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-  display:grid;
-  padding-bottom:1rem;
-
-
-}
 
 .name{
   color:black;
@@ -57,10 +49,5 @@ img{
   object-fit:cover;
   border-radius:1rem 1rem 0 0;
 }
-
-.link{
-  text-decoration: none;
-}
-
 
 </style>

@@ -2,12 +2,17 @@
   font-family: 'Oswald';
   src: url('./Oswald-VariableFont_wght.ttf') format('truetype'); 
 }
+@font-face {
+  font-family: 'RougeScript';
+  src: url('./RougeScript-Regular.ttf') format('truetype'); 
+}
+
 
 :root{
   --main-bg: #150026;
-  --btn-color: rgba(25, 173, 199, 0.274);
+  --btn-color: rgba(147, 255, 32, 0.482);
   --btn-color2: rgba(80, 158, 64, 0.404);
-  --btn-hover-color:  rgb(19, 156, 180);
+  --btn-hover-color:  rgba(74, 158, 18, 0.742);
   --text-color: white;
   --cool-font: 'Jacques Francois';
   --header-height: 4rem;
@@ -18,6 +23,10 @@
   --fs-400: clamp(1.4rem, calc(1.4rem + 1vmin), 1.6rem);
   --fs-500: clamp(1.6rem, calc(1.6rem + 1vmin), 1.8rem);
   --fs-600: clamp(1.8rem, calc(1.8rem + 1vmin), 2rem);
+
+  --ff-1: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  --ff-2: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  --ff-3: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 
 
@@ -49,8 +58,18 @@
   font-size: var(--fs-600);
 }
 
-html {
+.ff-1{
+  font-family: var(--ff-1);
+}
+.ff-2{
+  font-family: var(--ff-2);
+}
+.ff-3{
+  font-family: var(--ff-3);
+}
 
+html {
+    overflow-x:hidden;
     line-height: 1.4;
     /* 1 */
     -webkit-text-size-adjust: 100%;
@@ -111,7 +130,7 @@ a,
   background-color: transparent;
   /* 2 */
   background-image: none;
-  transition: 0.2s;
+  
   /* 2 */
 }
 
@@ -193,7 +212,11 @@ h2 {
 .letter-space{
   letter-spacing:1px;
 }
-.white-blur{
+
+.letter-shrink{
+  letter-spacing:-1px;
+}
+.white-blur:hover{
   text-shadow: 0 0 5px rgb(255, 255, 255), 0 0 12px rgb(255, 255, 255), 0 0 20px rgb(255, 255, 255), 0 0 30px rgb(255, 255, 255);
 }
 
@@ -238,6 +261,10 @@ h2 {
 .link{
   text-decoration: underline;
   color: blue;
+}
+
+.blue{
+  color:blue;
 }
 
 a{
@@ -294,6 +321,10 @@ a{
 .gap-big{
   gap:4rem;
 }
+
+.gap-tiny{
+  gap:1px;
+}
 /* layout end */
 
 /* position start */
@@ -337,6 +368,18 @@ a{
 .pad-small{
   padding: .2rem;
 }
+
+.ps-l{
+  padding-left:.3rem;
+}
+
+.pad-med{
+  padding:.5rem;
+}
+
+.btn-pad{
+  padding:.1em 1em;
+}
 /* padding end */
 
 /* margin start */
@@ -348,12 +391,21 @@ a{
   margin-left:1rem;
 }
 
+.ml-auto{
+  margin-left:auto;
+}
+
 .margin-top{
   margin-top:1rem;
 }
 
 .margin-bot{
   margin-bottom:1rem;
+}
+
+.margin-mid{
+  
+  margin-inline:auto;
 }
 
 /* background start */
@@ -420,6 +472,7 @@ video {
 .btn-even-pad{
   background: var(--btn-color);
   border-radius:.25rem;
+  border:1px solid black;
 }
 
 .main-btn:hover,
@@ -432,6 +485,12 @@ video {
   font-size:1.2rem;
   padding: .5em 1em;
   font-weight:bold;
+}
+
+button:disabled{
+  background:grey;
+  pointer-events: none;
+  cursor:default;
 }
 
 .main-btn-full.big-btn{
@@ -473,6 +532,10 @@ video {
 .hover-animation{
   transition: background-color 200ms ease-in-out;
 }
+
+.trans{
+  transition: all .2s;
+}
 /*header and page margin consistency*/
 
 .header-bg{
@@ -506,16 +569,26 @@ video {
 .grid-wrapper{
   display:grid;
   gap:1.5rem;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(33%, 18rem), 1fr));
+}
+
+.recipe-card{
+  background:rgba(228, 214, 135, 0.219);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  display:grid;
+  grid-template-rows: 4fr 1fr;
+}
+
+
+.no-link{
+  text-decoration: none;
 }
 
 input[type="checkbox"]{
   width:20px;
 }
-
-form{
-
-  padding:1rem;
+.inline{
+  display:inline-block;
 }
 
 .block{

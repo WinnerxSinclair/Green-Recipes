@@ -8,5 +8,46 @@ label{
 input{
   padding-left:1rem;
   line-height:2;
+}
+
+form{
+  width:90%;
+  margin:auto;
+}
+
+.c-ff{
+  font-family:RougeScript;
+  color:rgb(95, 234, 35);
+  font-size:clamp(3rem, 5vmin, 5rem);
+}
+.grid-c{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+}
+.nature{
+  width:100%;
+  height: calc(100vh - var(--header-height)); 
+  object-fit: cover;
   
+}
+.custom-google{
+  padding:.5rem;
+  border-radius:.25rem;
+  width:33%;
+  transition:.2s ease-in-out;
+  align-self:flex-start;
+  background: rgba(210, 210, 210, 0.538);
+  border:1px solid black;
+}
+.custom-google:hover{
+  background:rgb(92, 92, 92);
+}
+
+@media(max-width:768px){
+  .grid-c{
+    display:block;
+  }
+  .nature{
+    display:none;
+  }
 }
